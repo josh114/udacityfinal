@@ -14,7 +14,7 @@ const logger = createLogger('auth')
 // To get this URL you need to go to an Auth0 page -> Show Advanced Settings -> Endpoints -> JSON Web Key Set
 const jwksUrl = 'https://dev-ngw81qme.us.auth0.com/.well-known/jwks.json'
 
-export const handler = async (
+exports.handler = async (
   event: CustomAuthorizerEvent
 ): Promise<CustomAuthorizerResult> => {
   logger.info('Authorizing a user', event.authorizationToken)
@@ -64,12 +64,12 @@ async function verifyToken(authHeader: string): Promise<JwtPayload> {
   // return undefined
   const response = await Axios.get(jwksUrl)
   const keys = response.data.keys
-  const signinKeys = keys.find((key) => key.kid === jwt.header.kid)
-  if (!signinKeys) {
+  const signingKeys = keys.find(key => key.kid === jwt.header.kid)
+  if (!signingKeys) {
     throw new Error('The Jwks endpoint did not contain any keys')
   }
   // get pem data
-  const pemData = signinKeys.x5c[0]
+  const pemData = signingKeys.x5c[0]
   // convert pem data to cert
   const cert = `-----BEGIN CERTIFICATE-----\n${pemData}\n-----END CERTIFICATE-----`
   const verifiedToken = verify(token, cert, {
