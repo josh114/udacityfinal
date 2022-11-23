@@ -13,7 +13,7 @@ export const handler = middy(
     // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
     const userId = getUserId(event)
     console.log('userId', userId)
-    const url = await createAttachmentPresignedUrl(todoId)
+    const url = await createAttachmentPresignedUrl(todoId, userId)
     return {
       statusCode: 201,
       body: JSON.stringify({

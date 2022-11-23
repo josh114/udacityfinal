@@ -59,18 +59,19 @@ export async function updateTodo(
 }
 
 export async function deleteTodo(
-  userId: string,
-  todoId: string
+  todoId: string,
+  userId: string
 ): Promise<void> {
   logger.info('Delete todo function invoked')
-  return await todosAccess.deleteTodoItem(userId, todoId)
+  return await todosAccess.deleteTodoItem(todoId, userId)
 }
 
 //wrrite upload url logic
 
 export async function createAttachmentPresignedUrl(
-  todoId: string
+  todoId: string,
+  userId: string
 ): Promise<string> {
-  logger.info('get attcahment url function invoked')
+  logger.info('get attcahment url function invoked', userId)
   return attachmentUtils.getUploadUrl(todoId) as string
 }
