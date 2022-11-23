@@ -2,9 +2,10 @@ import { TodosAccess } from './todosAcess'
 import { AttachmentUtils } from './attachmentUtils'
 import { TodoItem } from '../models/TodoItem'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
-// import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
+import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
 import { createLogger } from '../utils/logger'
 import * as uuid from 'uuid'
+import { TodoUpdate } from '../models/TodoUpdate'
 // import * as createError from 'http-errors'
 
 // implement logi
@@ -39,4 +40,37 @@ export async function createTodo(
     ...newTodo
   }
   return await todosAccess.createTodoItem(newItem)
+}
+
+//implement updateTodo logic
+
+export async function updateTodo(
+  todoId: string,
+  todoUpdate: UpdateTodoRequest,
+  userId: string
+): Promise<TodoUpdate> {
+  logger.info('logger todo function')
+  const updateAction = await todosAccess.updateTodoItem(
+    todoId,
+    userId,
+    todoUpdate
+  )
+  return updateAction
+}
+
+export async function deleteTodo(
+  userId: string,
+  todoId: string
+): Promise<void> {
+  logger.info('Delete todo function invoked')
+  return await todosAccess.deleteTodoItem(userId, todoId)
+}
+
+//wrrite upload url logic
+
+export async function createAttachmentPresignedUrl(
+  todoId: string
+): Promise<string> {
+  logger.info('get attcahment url function invoked')
+  return attachmentUtils.getUploadUrl(todoId) as string
 }
