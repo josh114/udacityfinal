@@ -13,14 +13,14 @@ const logger = createLogger('TodosAccess')
 // TODO: Implement the dataLayer logic
 export class TodosAccess {
   constructor(
-    private readonly docClient: DocumentClient = new XAWS.DynamoDB.DocumentClient(),
+    private readonly docs: DocumentClient = new XAWS.DynamoDB.DocumentClient(),
     private readonly todosTable = process.env.TODOS_TABLE,
     private readonly todosIndex = process.env.INDEX_NAME
   ) {}
 
   async getAllTodos(userId: string): Promise<TodoItem[]> {
-    logger.info('Get all todos function called')
-    const result = await this.docClient
+    logger.info('Get all todos function invoked')
+    const result = await this.docs
       .query({
         TableName: this.todosTable,
         IndexName: this.todosIndex,
@@ -37,7 +37,7 @@ export class TodosAccess {
 
   async createTodoItem(todoItem: TodoItem): Promise<TodoItem> {
     logger.info('Create todo item function called')
-    await this.docClient
+    await this.docs
       .put({
         TableName: this.todosTable,
         Item: todoItem
@@ -54,7 +54,7 @@ export class TodosAccess {
   ): Promise<TodoUpdate> {
     logger.info('Update todo item function')
 
-    const result = await this.docClient
+    const result = await this.docs
       .update({
         TableName: this.todosTable,
         Key: {
@@ -80,8 +80,8 @@ export class TodosAccess {
   }
 
   async deleteTodoItem(todoId: string, userId: string): Promise<void> {
-    logger.info('Delete todoitem function')
-    await this.docClient
+    logger.info('Delete todoitem function invoked')
+    await this.docs
       .delete({
         TableName: this.todosTable,
         Key: {
@@ -98,7 +98,7 @@ export class TodosAccess {
     attachmentUrl: string
   ): Promise<void> {
     logger.info('Update attachment Url method')
-    await this.docClient
+    await this.docs
       .update({
         TableName: this.todosTable,
         Key: {
