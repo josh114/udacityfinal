@@ -31,10 +31,12 @@ export async function createTodo(
   const todoId = uuid.v4()
   const createdAt = new Date().toISOString()
   const s3AttachmentUrl = attachmentUtils.getAttachmentUrl(todoId)
+  const attachmentUrl = attachmentUtils.getUploadUrl(todoId)
   logger.info('s3AttachmentUrl', s3AttachmentUrl)
   const newItem = {
     userId,
     todoId,
+    attachmentUrl,
     createdAt,
     done: false,
     ...newTodo
