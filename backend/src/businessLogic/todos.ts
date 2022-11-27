@@ -13,6 +13,7 @@ import { TodoUpdate } from '../models/TodoUpdate'
 const logger = createLogger('TodoAccess')
 const attachmentUtils = new AttachmentUtils()
 const todosAccess = new TodosAccess()
+const bucketName = process.env.ATTACHMENT_S3_BUCKET
 
 //implement get todos function
 export async function getTodosForUser(userId: string): Promise<TodoItem[]> {
@@ -31,7 +32,7 @@ export async function createTodo(
   const todoId = uuid.v4()
   const createdAt = new Date().toISOString()
   const s3AttachmentUrl = attachmentUtils.getAttachmentUrl(todoId)
-  const attachmentUrl = attachmentUtils.getUploadUrl(todoId)
+  const attachmentUrl = ''
   logger.info('s3AttachmentUrl', s3AttachmentUrl)
   const newItem = {
     userId,
@@ -76,4 +77,18 @@ export async function createAttachmentPresignedUrl(
 ): Promise<string> {
   logger.info('get attcahment url function invoked', userId)
   return attachmentUtils.getUploadUrl(todoId) as string
+}
+
+//write update attachment function
+export async function updateAttachmentUrl(
+  todoId: string,
+  userId: string
+): Promise<void> {
+  logger.info('Update dynamo db with attachment Url')
+  const attachmentUrl = `https://${bucketName}.s3.amazonaws.com/${todoId}`
+  return await todosAccess.updateTodoAttachmentUrl(
+    todoId,
+    userId,
+    attachmentUrl
+  )
 }
